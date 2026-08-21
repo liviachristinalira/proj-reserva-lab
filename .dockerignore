@@ -1,2 +1,5 @@
-api/node_modules/
-api/.env
+api/node_modules
+node_modules
+.git
+terraform/.terraform
+terraform/*.tfstate
