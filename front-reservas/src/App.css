@@ -1,0 +1,113 @@
+/* Reseta estilos padrão do navegador */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Fundo da tela toda */
+.container-principal {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6; /* Cinza bem clarinho */
+}
+
+/* O "cartão" branco no meio da tela */
+.card-cadastro {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px; /* Bordas arredondadas */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  width: 100%;
+  max-width: 400px; /* Não deixa ficar largo demais em telas grandes */
+}
+
+/* Textos do cabeçalho */
+.card-cadastro h2 {
+  color: #1f2937;
+  font-size: 24px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.subtitulo {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Formulário e Inputs */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Espaço entre os campos */
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grupo-input label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.grupo-input input {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.grupo-input input:focus {
+  border-color: #3b82f6; /* Borda azul ao clicar */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); /* Brilho ao redor */
+}
+
+/* Botão */
+.botao-primario {
+  background-color: #3b82f6;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.botao-primario:hover {
+  background-color: #2563eb; /* Azul mais escuro ao passar o mouse */
+}
+
+/* Mensagens de feedback */
+.mensagem {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.mensagem.sucesso {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.mensagem.erro {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}

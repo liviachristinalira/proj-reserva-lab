@@ -42,6 +42,29 @@ async function criarUsuario(req, res) {
   }
 }
 
+async function listarUsuarios(req, res) {
+  const { nome } = req.query;
+
+  try {
+    let query = "SELECT id, nome, email, criado_em FROM usuarios";
+    let valores = [];
+
+    if (nome) {
+      query += " WHERE nome ILIKE $1";
+      valores.push(`%${nome}%`);
+    }
+
+    query += " ORDER BY id";
+
+    const resultado = await pool.query(query, valores);
+    res.json(resultado.rows);
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao buscar usuários." });
+  }
+}
+
 module.exports = { 
-  criarUsuario,  
+  criarUsuario, 
+  listarUsuarios
 };
