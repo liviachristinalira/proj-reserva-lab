@@ -17,8 +17,7 @@ provider "docker" {}
 # 1) Builda a imagem chamando "docker build" diretamente pelo terminal.
 #    OBS: o build nativo do provider (resource "docker_image" com bloco "build")
 #    tem um bug conhecido no Windows que corrompe o contexto enviado ao daemon.
-#    Rodar via local-exec contorna o problema, pois usa o mesmo docker build
-#    que você já testou manualmente e funcionou.
+#    Rodar via local-exec contorna o problema, pois usa o mesmo docker build.
 resource "null_resource" "build_postgres_image" {
   # Refaz o build sempre que o Dockerfile ou o init.sql mudarem
   triggers = {
