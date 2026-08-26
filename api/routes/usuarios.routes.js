@@ -2,10 +2,9 @@ const express = require("express");
 const router = express.Router();
 const usuariosController = require("../controllers/usuarios.controller");
 
-// POST /usuarios - Rota para criar um novo usuário
 router.post("/", usuariosController.criarUsuario);
-
-// GET /usuarios - Rota para listar todos os usuários
 router.get("/", usuariosController.listarUsuarios);
+// Nova rota de login!
+router.post("/login", usuariosController.fazerLogin);
 
 module.exports = router;

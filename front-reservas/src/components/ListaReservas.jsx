@@ -15,9 +15,36 @@ function ListaReservas() {
       const dados = await resposta.json();
       setReservas(dados);
     } catch (erro) {
-      console.error(erro);
+      console.error("Erro ao buscar reservas:", erro);
     } finally {
       setCarregando(false);
+    }
+  };
+
+  const cancelarReserva = async (id) => {
+    const confirmar = window.confirm(
+      "Tem certeza que deseja cancelar esta reserva?",
+    );
+    if (!confirmar) return;
+
+    try {
+      // OLHA A MÁGICA AQUI: adicionamos o /cancelar no final da URL!
+      const resposta = await fetch(
+        `http://localhost:3000/reservas/${id}/cancelar`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      if (resposta.ok) {
+        alert("Reserva cancelada com sucesso!");
+        buscarReservas(); // Atualiza a lista instantaneamente
+      } else {
+        const dados = await resposta.json();
+        alert(`Erro: ${dados.erro}`);
+      }
+    } catch (erro) {
+      alert("Erro ao conectar com o servidor para cancelar.");
     }
   };
 
@@ -48,27 +75,60 @@ function ListaReservas() {
                     display: "flex",
                     justifyContent: "space-between",
                     width: "100%",
+                    alignItems: "center",
                   }}
                 >
                   <h3>
                     {reserva.laboratorio_nome ||
                       `Lab ID: ${reserva.laboratorio_id}`}
                   </h3>
-                  <span
+
+                  <div
                     style={{
-                      backgroundColor:
-                        reserva.status === "confirmada" ? "#d1fae5" : "#fee2e2",
-                      color:
-                        reserva.status === "confirmada" ? "#065f46" : "#991b1b",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      fontWeight: "bold",
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
                     }}
                   >
-                    {reserva.status.toUpperCase()}
-                  </span>
+                    <span
+                      style={{
+                        backgroundColor:
+                          reserva.status === "confirmada"
+                            ? "#d1fae5"
+                            : "#fee2e2",
+                        color:
+                          reserva.status === "confirmada"
+                            ? "#065f46"
+                            : "#991b1b",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {reserva.status.toUpperCase()}
+                    </span>
+
+                    {/* Botão de Cancelar - Só aparece se a reserva estiver ativa/confirmada */}
+                    {reserva.status === "confirmada" && (
+                      <button
+                        onClick={() => cancelarReserva(reserva.id)}
+                        style={{
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "none",
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          fontSize: "12px",
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                    )}
+                  </div>
                 </div>
+
                 <p>
                   <strong>Início:</strong>{" "}
                   {new Date(reserva.data_inicio).toLocaleString("pt-BR")}

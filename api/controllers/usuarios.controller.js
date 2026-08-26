@@ -1,5 +1,5 @@
 const pool = require("../db/pool");
-const bcrypt = require("bcrypt"); // 1. Importando o bcrypt
+const bcrypt = require("bcrypt");
 
 async function criarUsuario(req, res) {
   const { nome, email, senha } = req.body;
@@ -22,12 +22,9 @@ async function criarUsuario(req, res) {
       });
     }
 
-    // 2. Criptografando a senha
-    // O número 10 (saltRounds) define a "força" da criptografia
     const saltos = 10;
     const senha_hash = await bcrypt.hash(senha, saltos);
 
-    // 3. Salvando no banco com a senha protegida
     const resultado = await pool.query(
       `INSERT INTO usuarios (nome, email, senha_hash) 
        VALUES ($1, $2, $3) 
@@ -64,7 +61,43 @@ async function listarUsuarios(req, res) {
   }
 }
 
-module.exports = { 
-  criarUsuario, 
-  listarUsuarios
+async function fazerLogin(req, res) {
+  const { email, senha } = req.body;
+
+  try {
+    // 1. Busca o usuário APENAS pelo e-mail e traz o senha_hash
+    const query =
+      "SELECT id, nome, email, senha_hash FROM usuarios WHERE email = $1";
+    const resultado = await pool.query(query, [email]);
+
+    // Se o resultado for zero, o e-mail não existe no banco
+    if (resultado.rows.length === 0) {
+      return res.status(401).json({ erro: "E-mail ou senha incorretos." });
+    }
+
+    const usuario = resultado.rows[0];
+
+    // 2. Compara a senha digitada limpa com o senha_hash do banco
+    const senhaValida = await bcrypt.compare(senha, usuario.senha_hash);
+
+    // Se a senha não bater, barra o acesso
+    if (!senhaValida) {
+      return res.status(401).json({ erro: "E-mail ou senha incorretos." });
+    }
+
+    // 3. Remove o hash da senha do objeto antes de enviar para o React
+    delete usuario.senha_hash;
+
+    // Se achou e a senha está correta, devolve os dados do usuário para o React salvar
+    res.json(usuario);
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao tentar fazer login." });
+  }
+}
+
+module.exports = {
+  criarUsuario,
+  listarUsuarios,
+  fazerLogin,
 };

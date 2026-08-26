@@ -1,28 +1,26 @@
 import { useState, useEffect } from "react";
 
-function NovaReserva() {
-  const [usuarioId, setUsuarioId] = useState("");
+// Agora a tela recebe quem está logado como parâmetro!
+function NovaReserva({ usuarioLogado }) {
   const [laboratorioId, setLaboratorioId] = useState("");
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [descricao, setDescricao] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [sucesso, setSucesso] = useState(false);
-
   const [laboratorios, setLaboratorios] = useState([]);
 
-  // Busca laboratórios para o select
   useEffect(() => {
-    const buscarLabsParaSelect = async () => {
+    const buscarLabs = async () => {
       try {
         const resposta = await fetch("http://localhost:3000/laboratorios");
         const dados = await resposta.json();
         setLaboratorios(dados);
       } catch (erro) {
-        console.error("Erro ao carregar labs", erro);
+        console.error(erro);
       }
     };
-    buscarLabsParaSelect();
+    buscarLabs();
   }, []);
 
   const realizarReserva = async (e) => {
@@ -32,7 +30,7 @@ function NovaReserva() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usuario_id: usuarioId,
+          usuario_id: usuarioLogado.id, // Pega o ID automaticamente!
           laboratorio_id: laboratorioId,
           data_inicio: dataInicio,
           data_fim: dataFim,
@@ -45,7 +43,6 @@ function NovaReserva() {
       if (resposta.ok) {
         setMensagem("Reserva confirmada com sucesso!");
         setSucesso(true);
-        setUsuarioId("");
         setLaboratorioId("");
         setDataInicio("");
         setDataFim("");
@@ -63,19 +60,12 @@ function NovaReserva() {
   return (
     <div className="card">
       <h2>Agendar Laboratório</h2>
-      <p className="subtitulo">Preencha os dados para garantir o seu horário</p>
+      {/* Mostra de quem é a reserva */}
+      <p className="subtitulo">
+        Reservando em nome de: <strong>{usuarioLogado.nome}</strong>
+      </p>
 
       <form onSubmit={realizarReserva} className="formulario">
-        <div className="grupo-input">
-          <label>Seu ID de Usuário (Provisório)</label>
-          <input
-            type="number"
-            placeholder="Ex: 1"
-            value={usuarioId}
-            onChange={(e) => setUsuarioId(e.target.value)}
-            required
-          />
-        </div>
         <div className="grupo-input">
           <label>Escolha o Laboratório</label>
           <select
